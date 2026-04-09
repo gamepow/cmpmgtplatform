@@ -26,12 +26,17 @@ def add_user():
     password = request.form['password']
     role = request.form['role']
     company_id = request.form.get('company_id') if role == 'owner' else None
-
     conn = get_users_connection()
     if company_id:
-        conn.execute("INSERT INTO users (username, password, role, company_id) VALUES ('"+username+"', '"+hash_password(password)+"', "+role+", "+company_id+")")
+        conn.execute(
+            "INSERT INTO users (username, password, role, company_id) VALUES (?, ?, ?, ?)",
+            (username, hash_password(password), role, company_id)
+        )
     else:
-        conn.execute("INSERT INTO users (username, password, role) VALUES ('"+username+"', '"+hash_password(password)+"', "+role+")")
+        conn.execute(
+            "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+            (username, hash_password(password), role)
+        )
     conn.commit()
     conn.close()
     flash("User created successfully.", "success")
