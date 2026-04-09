@@ -1,2 +1,9 @@
 .env.sonar
 sonar-project.local.properties
+
+# SonarQube
+.scannerwork/
+sonar-project.properties
+
+# VS Code settings (Opcional, pero recomendado si son ajustes personales)
+.vscode/settings.json
