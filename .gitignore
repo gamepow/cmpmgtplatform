@@ -7,3 +7,13 @@ sonar-project.properties
 
 # VS Code settings (Opcional, pero recomendado si son ajustes personales)
 .vscode/settings.json
+
+# Ignorar archivos de db
+*.db
+
+# Entorno virtual
+.venv/
+
+# Caché de Python
+__pycache__/
+*.pyc
