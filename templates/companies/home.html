@@ -21,6 +21,7 @@
 
 <form class="mb-4" method="get" action="/companies">
     <div class="input-group">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input type="text" class="form-control" name="q" placeholder="Search companies..." value="{{ search }}">
         <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
         {% if search %}
@@ -53,6 +54,7 @@
                         <a href="/companies/{{ company['id'] }}/edit" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i></a>
                         <form method="post" action="/admin/companies/delete" class="d-inline" onsubmit="return confirm('Delete this company?');">
                             <input type="hidden" name="company" value="{{ company['id'] }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
                         </form>
                     {% elif session['role'] == 'owner' and company['owner'] == session['username'] %}

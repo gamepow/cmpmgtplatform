@@ -23,6 +23,7 @@
                 <label class="form-label">Description</label>
                 <textarea class="form-control" name="description" rows="3" required>{{ company['description'] }}</textarea>
             </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <button class="btn btn-primary" type="submit"><i class="bi bi-save"></i> Save Changes</button>
             <a href="/companies/{{ company['id'] }}" class="btn btn-secondary">Cancel</a>
         </form>

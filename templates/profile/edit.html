@@ -18,6 +18,7 @@
                 <input class="form-control" type="text" name="username" value="{{ user['username'] }}" required>
             </div>
             <input type="hidden" name="role" value="{{ user['role'] }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <button class="btn btn-primary" type="submit"><i class="bi bi-save"></i> Save Changes</button>
             <a href="/dashboard" class="btn btn-secondary">Cancel</a>
         </form>

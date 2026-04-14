@@ -26,6 +26,7 @@
                 <label class="form-label">Owner (username)</label>
                 <input class="form-control" type="text" name="owner" required>
             </div>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <button class="btn btn-success" type="submit"><i class="bi bi-plus-circle"></i> Register</button>
             <a href="/companies" class="btn btn-secondary">Cancel</a>
         </form>
