@@ -37,11 +37,11 @@
             <div class="card-body">
                 <h5 class="card-title">
                     <a href="/companies/{{ company['id'] }}" class="text-decoration-none">
-                        {{ company['name'] | safe }}
+                        {{ company['name'] }}
                     </a>
                 </h5>
                 {% if company.get('description') %}
-                <p class="card-text text-muted small">{{ company['description']|safe|truncate(80) }}</p>
+                <p class="card-text text-muted small">{{ company['description']|truncate(80) }}</p>
                 {% endif %}
                 <span class="badge bg-info badge-comments">
                     <i class="bi bi-chat-dots"></i> {{ company['comment_count'] }} comments
