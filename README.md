@@ -9,6 +9,9 @@
 ```bash
 pip install -r requirements.txt
 python main.py
+Before executing it is required to create an environment variable in the system with the API Key:
+env variable name: SECRET_KEY
+For development environments, a random key can be generated.
 ```
 
 Visit: `http://127.0.0.1:5000`
