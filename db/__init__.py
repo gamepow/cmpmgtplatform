@@ -1,13 +1,27 @@
 import sqlite3
 import os
 import hashlib
+import bcrypt
 
 DB_DIR = os.path.join(os.path.dirname(__file__), '..', 'db')
 USERS_DB = os.path.join(DB_DIR, 'users.db')
 DATA_DB = os.path.join(DB_DIR, 'data.db')
 
 def hash_password(password):
-    return hashlib.md5(password.encode()).hexdigest()
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+def verify_password(password, stored_hash):
+    if not stored_hash:
+        return False, False
+
+    if stored_hash.startswith("$2a$") or stored_hash.startswith("$2b$") or stored_hash.startswith("$2y$"):
+        ok = bcrypt.checkpw(password.encode("utf-8"), stored_hash.encode("utf-8"))
+        return ok, False
+
+    # Se incluye verificación con usuarios que tenian el password con MD5
+    legacy_ok = hashlib.md5(password.encode()).hexdigest() == stored_hash
+    # Si fue MD5 válido, pedir rehash a BCrypt
+    return legacy_ok, legacy_ok
 
 def ensure_users_db():
     # Primero, asegurarse de que las tablas de datos existen (empresas, comentarios)

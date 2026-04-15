@@ -1,5 +1,5 @@
 import sqlite3
-import hashlib
+import bcrypt
 import os
 
 db_dir = os.path.join(os.path.dirname(__file__), 'db')
@@ -9,7 +9,7 @@ users_db = os.path.join(db_dir, 'users.db')
 data_db = os.path.join(db_dir, 'data.db')
 
 def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 # Crear base de datos de usuarios
 conn = sqlite3.connect(users_db)
@@ -27,6 +27,15 @@ users = [
     ('admin', hash_password('admin123'), 'admin')
 ]
 c.executemany("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", users)
+
+# Tabla para rate limiting y lock temporal de login
+c.execute("""CREATE TABLE IF NOT EXISTS login_attempts (
+    attempt_key TEXT PRIMARY KEY,
+    fail_count INTEGER NOT NULL DEFAULT 0,
+    window_start INTEGER NOT NULL,
+    lock_until INTEGER
+)""")
+
 conn.commit()
 conn.close()
 

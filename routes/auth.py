@@ -2,7 +2,7 @@ import time
 import math
 
 from urllib.parse import urlparse, urljoin
-from db import get_users_connection, hash_password
+from db import get_users_connection, verify_password, hash_password
 from flask import request, redirect, render_template, session, flash
 from server import app
 
@@ -89,20 +89,34 @@ def login():
                 lock_until = 0
 
         user = conn.execute(
-            "SELECT * FROM users WHERE username = ? AND password = ?",
-            (username, hash_password(password))
+            "SELECT * FROM users WHERE username = ?",
+            (username,)
         ).fetchone()
 
+        is_valid = False
+        needs_rehash = False
+
         if user:
-            # Login correcto: limpiar contador de intentos
+            is_valid, needs_rehash = verify_password(password, user["password"])
+
+        if is_valid:
+            # Migración automática de MD5 a BCrypt en login exitoso
+            if needs_rehash:
+                new_hash = hash_password(password)
+                conn.execute(
+                    "UPDATE users SET password = ? WHERE id = ?",
+                    (new_hash, user["id"])
+                )
+                conn.commit()
+
             conn.execute("DELETE FROM login_attempts WHERE attempt_key = ?", (attempt_key,))
             conn.commit()
             conn.close()
 
-            session['user_id'] = user['id']
-            session['username'] = user['username']
-            session['role'] = user['role']
-            session['company_id'] = user['company_id']
+            session["user_id"] = user["id"]
+            session["username"] = user["username"]
+            session["role"] = user["role"]
+            session["company_id"] = user["company_id"]
             session.permanent = True
             return redirect(next_url)
 
