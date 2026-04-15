@@ -23,12 +23,22 @@
             </div>
             <div class="col-md-4">
                 <label class="form-label">Owner</label>
-                <input class="form-control" type="text" name="owner" required>
+                <select class="form-select" name="owner_username" required>
+                    <option value="">-- Select owner --</option>
+                    {% for owner in available_owners %}
+                        <option value="{{ owner['username'] }}">{{ owner['username'] }}</option>
+                    {% endfor %}
+                </select>
+                {% if not available_owners %}
+                    <small class="text-muted">No available owners without company.</small>
+                {% endif %}
             </div>
             <div class="col-md-4 d-flex align-items-end">
-                <button class="btn btn-success" type="submit" onclick="return confirm('Create this company?');">
-                    <i class="bi bi-plus-circle"></i> Create
-                </button>
+                <button class="btn btn-success" type="submit"
+                    {% if not available_owners %}disabled{% endif %}
+                    onclick="return confirm('Create this company?');">
+                <i class="bi bi-plus-circle"></i> Create
+            </button>
             </div>
         </form>
     </div>

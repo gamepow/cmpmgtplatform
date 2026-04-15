@@ -24,10 +24,20 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Owner (username)</label>
-                <input class="form-control" type="text" name="owner" required>
+                <select class="form-select" name="owner_username" required>
+                    <option value="">-- Select owner --</option>
+                    {% for owner in available_owners %}
+                        <option value="{{ owner['username'] }}">{{ owner['username'] }}</option>
+                    {% endfor %}
+                </select>
+                {% if not available_owners %}
+                    <small class="text-muted">No available owners without company.</small>
+                {% endif %}
             </div>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-            <button class="btn btn-success" type="submit"><i class="bi bi-plus-circle"></i> Register</button>
+            <button class="btn btn-success" type="submit" {% if not available_owners %}disabled{% endif %}>
+                <i class="bi bi-plus-circle"></i> Register
+            </button>
             <a href="/companies" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
