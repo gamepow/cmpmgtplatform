@@ -13,6 +13,11 @@ if not secret_key:
 app.config["SECRET_KEY"] = secret_key
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=30)
 
+# Configuración de cookies de sesión
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = True
+
 csrf = CSRFProtect(app)
 
 @app.errorhandler(404)
