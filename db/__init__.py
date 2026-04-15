@@ -32,9 +32,15 @@ def ensure_users_db():
         ]
         c.executemany("INSERT INTO users (username, password, role, company_id) VALUES (?, ?, ?, ?)", users)
         
+        c.execute("""CREATE TABLE IF NOT EXISTS login_attempts (
+            attempt_key TEXT PRIMARY KEY,
+            fail_count INTEGER NOT NULL DEFAULT 0,
+            window_start INTEGER NOT NULL,
+            lock_until INTEGER
+        )""")
+
         conn.commit()
         conn.close()
-
 
 
 def ensure_data_db():
