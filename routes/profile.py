@@ -34,18 +34,21 @@ def user_profile(user_id):
 def edit_profile():
     if 'username' not in session:
         return redirect('/login')
+    
+    #El rol se obtiene de la sesión
+    current_role = session.get("role")
+    
     conn = get_users_connection()
     user = conn.execute("SELECT * FROM users WHERE username = ?", (session['username'],)).fetchone()
 
     if request.method == 'POST':
         new_username = request.form['username']
-        role = request.form.get('role', session['role'])
         conn.execute("UPDATE users SET username = ?, role = ? WHERE username = ?",
-                     (new_username, role, session['username']))
+                     (new_username, current_role, session['username']))
         conn.commit()
         conn.close()
         session['username'] = new_username
-        session['role'] = role
+        session['role'] = current_role
         flash("Profile updated successfully.", "success")
         return redirect('/dashboard')
     conn.close()
