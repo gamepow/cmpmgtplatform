@@ -5,8 +5,16 @@ from db import get_users_connection, get_data_connection
 
 @app.route('/profile/<int:user_id>')
 def user_profile(user_id):
+
     if 'username' not in session:
         return redirect('/login')
+    
+    current_user_id = session.get("user_id")
+    current_role = session.get("role")
+
+    if current_role != "admin" and current_user_id != user_id:
+        return render_template('errors/403.html'), 403
+
     conn_u = get_users_connection()
     user = conn_u.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
     conn_u.close()

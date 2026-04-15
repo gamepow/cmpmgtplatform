@@ -2,10 +2,13 @@ import os
 from datetime import timedelta
 from flask import Flask, render_template
 from flask_wtf.csrf import CSRFProtect
+import logging
 
 app = Flask(__name__)
 
-# Falla rápido si no hay SECRET_KEY (seguro para producción)
+#app.logger.setLevel(logging.DEBUG)
+
+# Si secret key no esta definida, la aplicación no inicia y lanza un error al desarrollador.
 secret_key = os.getenv("SECRET_KEY")
 if not secret_key:
     raise RuntimeError("SECRET_KEY no está definida en variables de entorno")
