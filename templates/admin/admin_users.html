@@ -38,7 +38,7 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <button class="btn btn-success" type="submit" onclick="return confirm('Create this user?');">
+                <button class="btn btn-success" type="submit" id="create-btn" disabled>
                     <i class="bi bi-person-plus"></i> Create
                 </button>
             </div>
@@ -51,6 +51,51 @@ document.getElementById("role-select").addEventListener("change", function() {
     document.getElementById("company-select-container").style.display = 
         this.value === "owner" ? "block" : "none";
 });
+</script>
+
+<script>
+// Validación de contraseña
+const passwordInput = document.querySelector('input[name="password"]');
+const createBtn = document.querySelector('button[type="submit"]');
+
+function validatePassword(password) {
+    const requirements = {
+        minLength: password.length >= 8,
+        hasLower: /[a-z]/.test(password),
+        hasUpper: /[A-Z]/.test(password),
+        hasNumber: /\d/.test(password),
+        hasSpecial: /[!@#$%^&*()_+\-=\[\]{};:'"",.<>?/\\|`~]/.test(password)
+    };
+    return requirements;
+}
+
+function updatePasswordFeedback() {
+    const password = passwordInput.value;
+    const requirements = validatePassword(password);
+    
+    let feedbackHTML = '<small class="d-block mt-2"><strong>Requisitos:</strong><br>';
+    feedbackHTML += `<span style="color: ${requirements.minLength ? 'green' : 'red'}">✓ Mínimo 8 caracteres</span><br>`;
+    feedbackHTML += `<span style="color: ${requirements.hasLower ? 'green' : 'red'}">✓ Una letra minúscula</span><br>`;
+    feedbackHTML += `<span style="color: ${requirements.hasUpper ? 'green' : 'red'}">✓ Una letra mayúscula</span><br>`;
+    feedbackHTML += `<span style="color: ${requirements.hasNumber ? 'green' : 'red'}">✓ Un número</span><br>`;
+    feedbackHTML += `<span style="color: ${requirements.hasSpecial ? 'green' : 'red'}">✓ Un carácter especial</span>`;
+    feedbackHTML += '</small>';
+    
+    let feedbackDiv = document.getElementById('password-feedback');
+    if (!feedbackDiv) {
+        feedbackDiv = document.createElement('div');
+        feedbackDiv.id = 'password-feedback';
+        passwordInput.parentElement.appendChild(feedbackDiv);
+    }
+    feedbackDiv.innerHTML = feedbackHTML;
+    
+    // Habilitar/deshabilitar botón
+    const allValid = Object.values(requirements).every(v => v);
+    createBtn.disabled = !allValid;
+}
+
+passwordInput.addEventListener('input', updatePasswordFeedback);
+passwordInput.addEventListener('focus', updatePasswordFeedback);
 </script>
 
 <div class="card">
