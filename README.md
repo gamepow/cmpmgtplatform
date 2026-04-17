@@ -6,9 +6,9 @@
 
 ## Installation
 
-# Before executing it is required to create an environment variable in the system with the API Key:
-# env variable name: SECRET_KEY
-# example for development purposes:  export SECRET_KEY="$(python3 -c "import secrets; print(secrets.token_urlsafe(64))")"
+Before executing it is required to create an environment variable in the system with the API Key:
+env variable name: SECRET_KEY
+example for development purposes:  export SECRET_KEY="$(python3 -c "import secrets; print(secrets.token_urlsafe(64))")"
 
 ```bash
 pip install -r requirements.txt
