@@ -1,0 +1,59 @@
+name: DevSecOps Pipeline
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  security-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar código
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      # 2. Preparar entorno Python
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Instalar dependencias del proyecto
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4. SAST - Análisis estático con Semgrep
+      - name: Análisis SAST con Semgrep
+        run: |
+          pip install semgrep
+          semgrep scan --config=auto --lang python \
+            --severity ERROR --severity WARNING \
+            --json --output semgrep-results.json . || true
+          echo "=== Resumen SAST ==="
+          semgrep scan --config=auto --lang python \
+            --severity ERROR --severity WARNING . || true
+
+      # 5. SCA - Análisis de dependencias con pip-audit
+      - name: Análisis SCA con pip-audit
+        run: |
+          pip install pip-audit
+          pip-audit --output json -o pip-audit-results.json || true
+          echo "=== Resumen SCA ==="
+          pip-audit || true
+
+      # 6. Subir resultados como artefactos
+      - name: Guardar resultados del análisis
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            semgrep-results.json
+            pip-audit-results.json
+
+      # 7. Resultado final
+      - name: Resultado del pipeline
+        run: echo "✅ Pipeline de seguridad finalizado correctamente"
